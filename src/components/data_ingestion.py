@@ -12,7 +12,7 @@ from src.components.model_trainer import ModelTrainerConfig
 from src.components.model_trainer import ModelTrainer
 
 
-# ✅ Configuration dataclass for data ingestion
+#  Configuration dataclass for data ingestion
 @dataclass
 class DataIngestionConfig:
     train_data_path: str = os.path.join('artifacts', 'train.csv')
@@ -20,7 +20,7 @@ class DataIngestionConfig:
     raw_data_path: str = os.path.join('artifacts', 'data.csv')
 
 
-# ✅ Main DataIngestion class
+#  Main DataIngestion class
 class DataIngestion:
     def __init__(self):
         self.ingestion_config = DataIngestionConfig()
@@ -28,20 +28,20 @@ class DataIngestion:
     def initiate_data_ingestion(self):
         logging.info('Entered the data ingestion method or component')
         try:
-            # ✅ Read the dataset
+            #  Read the dataset
             df = pd.read_csv(os.path.join('notebook', 'data', 'stud.csv'))
             logging.info('Read the dataset as a dataframe')
 
-            # ✅ Create the artifacts directory if it doesn’t exist
+            #  Create the artifacts directory if it doesn’t exist
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
 
-            # ✅ Save raw data
+            #  Save raw data
             df.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
 
             logging.info('Train-test split initiated')
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
 
-            # ✅ Save train and test data
+            # Save train and test data
             train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)
 
