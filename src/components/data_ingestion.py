@@ -8,6 +8,9 @@ from dataclasses import dataclass
 
 from src.components.data_transformation import DataTransformation
 
+from src.components.model_trainer import ModelTrainerConfig
+from src.components.model_trainer import ModelTrainer
+
 
 # ✅ Configuration dataclass for data ingestion
 @dataclass
@@ -52,18 +55,26 @@ class DataIngestion:
         except Exception as e:
             raise CustomException(e, sys)
 
-
-# ✅ Execution entry point
 if __name__ == '__main__':
     try:
+        
         obj = DataIngestion()
         train_data, test_data = obj.initiate_data_ingestion()
 
         data_transformation = DataTransformation()
         train_arr, test_arr, preprocessor_path = data_transformation.initiate_data_transformation(train_data, test_data)
+        logging.info(f" Data transformation completed successfully. Preprocessor saved at: {preprocessor_path}")
 
-        logging.info(f"Data transformation completed successfully. Preprocessor saved at: {preprocessor_path}")
+        model_trainer = ModelTrainer()
+        r2_score_value = model_trainer.initiate_model_trainer(train_arr, test_arr)
+
+        # Log final summary
+        logging.info("\n" + "=" * 50)
+        logging.info(" MODEL TRAINING COMPLETED SUCCESSFULLY!")
+        logging.info(f" Final R2 Score: {r2_score_value:.4f}")
+        logging.info(f" Model saved at: artifacts/model.pkl")
+        logging.info("=" * 50 + "\n")
 
     except Exception as e:
-        logging.error(f"Error in main execution: {e}")
-        raise CustomException(e, sys)
+        logging.error(" Error occurred during pipeline execution")
+        logging.exception(e)

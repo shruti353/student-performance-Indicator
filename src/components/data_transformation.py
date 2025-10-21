@@ -14,13 +14,13 @@ from src.logger import logging
 from src.utils import save_object
 
 
-# ✅ Configuration dataclass
+#  Configuration dataclass
 @dataclass
 class DataTransformationConfig:
     preprocessor_obj_file: str = os.path.join('artifacts', 'preprocessor.pkl')
 
 
-# ✅ Main DataTransformation class
+# Main DataTransformation class
 class DataTransformation:
     def __init__(self):
         self.data_transformation_config = DataTransformationConfig()
@@ -40,7 +40,7 @@ class DataTransformation:
                 "test_preparation_course",
             ]
 
-            # ✅ Numerical pipeline
+            #  Numerical pipeline
             num_pipeline = Pipeline(
                 steps=[
                     ('imputer', SimpleImputer(strategy='median')),
@@ -48,7 +48,7 @@ class DataTransformation:
                 ]
             )
 
-            # ✅ Categorical pipeline
+            #  Categorical pipeline
             cat_pipeline = Pipeline(
                 steps=[
                     ('imputer', SimpleImputer(strategy='most_frequent')),
@@ -59,7 +59,7 @@ class DataTransformation:
 
             logging.info("Numerical and categorical pipelines created successfully.")
 
-            # ✅ Combine both pipelines
+            #  Combine both pipelines
             preprocessor = ColumnTransformer(
                 [
                     ('num_pipeline', num_pipeline, numerical_columns),
@@ -78,7 +78,7 @@ class DataTransformation:
         saves the preprocessor object, and returns the transformed arrays.
         """
         try:
-            # ✅ Read train and test data
+            #  Read train and test data
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
             logging.info("Read train and test data completed")
@@ -88,7 +88,7 @@ class DataTransformation:
             target_column_name = "math_score"
             numerical_columns = ["writing_score", "reading_score"]
 
-            # ✅ Separate input and target features
+            #  Separate input and target features
             input_feature_train_df = train_df.drop(columns=[target_column_name], axis=1)
             target_feature_train_df = train_df[target_column_name]
 
@@ -97,17 +97,17 @@ class DataTransformation:
 
             logging.info("Applying preprocessing object on training and test dataframes")
 
-            # ✅ Transform the data
+            #  Transform the data
             input_feature_train_arr = preprocessing_obj.fit_transform(input_feature_train_df)
             input_feature_test_arr = preprocessing_obj.transform(input_feature_test_df)
 
-            # ✅ Combine input and target arrays
+            #  Combine input and target arrays
             train_arr = np.c_[input_feature_train_arr, np.array(target_feature_train_df)]
             test_arr = np.c_[input_feature_test_arr, np.array(target_feature_test_df)]
 
             logging.info("Saving preprocessing object")
 
-            # ✅ Save the preprocessor as a pickle file
+            # Save the preprocessor as a pickle file
             save_object(
                 file_path=self.data_transformation_config.preprocessor_obj_file,
                 obj=preprocessing_obj
@@ -115,7 +115,7 @@ class DataTransformation:
 
             logging.info(f"Preprocessing object saved at {self.data_transformation_config.preprocessor_obj_file}")
 
-            # ✅ Return final transformed arrays and file path
+            #  Return final transformed arrays and file path
             return (
                 train_arr,
                 test_arr,
